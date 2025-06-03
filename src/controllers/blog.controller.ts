@@ -31,6 +31,14 @@ export const getAllBlog = async (
   }
 };
 
+export const createBlog = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+
+  console.log(req.body)
+};
 
 
 

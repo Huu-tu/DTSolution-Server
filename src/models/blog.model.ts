@@ -7,6 +7,10 @@ const BlogSchema = new Schema(
       type: String,
       required: true,
     },
+    paragraph: {
+      type: String,
+      required: true,
+    },
     content: {
       type: String,
       required: true,
@@ -14,6 +18,7 @@ const BlogSchema = new Schema(
     image: {
       type: String,
       required: false,
+      data: Buffer,
     },
     type: {
       type: String,
