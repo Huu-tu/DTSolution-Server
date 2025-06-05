@@ -1,11 +1,13 @@
 import { Router } from "express";
-import { getAllBlog, createBlog } from "../controllers/blog.controller";
+import { getAllBlog,getSingleBlog, createBlog } from "../controllers/blog.controller";
 import ImgUpload from '../middlewares/fileUpload';
 
 const router: Router = Router();
 
-// Get all blogs
+// Blogs
 router.get("/", getAllBlog);
+router.get("/:id", getSingleBlog);
 router.post("/", ImgUpload.single('image'), createBlog);
+
 
 export default router;

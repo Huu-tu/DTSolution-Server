@@ -1,19 +1,19 @@
 import { Request, Response, NextFunction } from "express";
-import Blog from "../models/blog.model";
+import Solution from "../models/solution.model";
 
-export const getAllBlog = async (
+export const getAllSolution = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const blogs = await Blog.find();
+    const solutions = await Solution.find();
 
-    if (blogs && blogs.length > 0) {
-      res.status(200).json(blogs);
+    if (solutions && solutions.length > 0) {
+      res.status(200).json(solutions);
     } else {
       res.status(404).json({
-        message: "No blogs found.",
+        message: "No solutions found.",
       });
     }
   } catch (error: any) {
@@ -23,58 +23,56 @@ export const getAllBlog = async (
       });
     } else {
       res.status(500).json({
-        message: "An error occurred while fetching blogs.",
+        message: "An error occurred while fetching solutions.",
         error: error.message
       });
     }
   }
 };
 
-export const getSingleBlog = async (
+
+export const getSingleSolution = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const data = await Blog.findById(req.params.id)
+    const singleSolution = await Solution.findById(req.params.id)
       .select('title paragraph content image type createdAt');
 
-    if (!data) {
-      res.status(404).json({ message: 'Blog not found' });
+    if (!singleSolution) {
+      res.status(404).json({ message: 'Solution not found' });
       return;
     }
 
-    res.status(200).json(data);
+    res.status(200).json(singleSolution);
   } catch (error) {
     next(error);
   }
 };
 
-export const createBlog = async (
+export const createSolution = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   let title = req.body.title;
-  let paragraph = req.body.paragraph;
-  let content = req.body.content;
-  let type = req.body.type;
+  let description = req.body.description;
+  let company = req.body.company;
+  let tech = req.body.tech;
   let image = req.file.filename;
 
-  const data = await Blog.create({
+  const solution = await Solution.create({
     title,
-    paragraph,
-    content,
-    type,
+    description,
+    company,
+    tech,
     image,
   });
 
-  if (data) {
+  if (solution) {
     res.status(200).json('Success');
   } else {
     res.json('Failed');
   }
 };
-
-
-
