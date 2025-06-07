@@ -38,7 +38,7 @@ export const getSingleSolution = async (
 ): Promise<void> => {
   try {
     const singleSolution = await Solution.findById(req.params.id)
-      .select('title paragraph content image type createdAt');
+      .select('title description company image tech createdAt');
 
     if (!singleSolution) {
       res.status(404).json({ message: 'Solution not found' });

@@ -3,26 +3,29 @@ const Schema = mongoose.Schema;
 
 const ConsultationSchema = new Schema(
   {
-    title: {
+    name: {
       type: String,
       required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    phone:{
+      type: Number,
+      required: true,
+    },
+    topic: {
+      type: String,
+      required: false,
     },
     description: {
       type: String,
       required: true,
     },
-    company:{
-      type: String,
-      required: true,
-    },
-    image: {
-      type: String,
-      required: false,
-      data: Buffer,
-    },
     tech: {
       type: String,
-      required: true,
+      required: false,
     },
   },
   {
