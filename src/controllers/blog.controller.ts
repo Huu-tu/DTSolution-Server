@@ -59,6 +59,11 @@ export const createBlog = async (
   let paragraph = req.body.paragraph;
   let content = req.body.content;
   let type = req.body.type;
+
+  if (!req.file) {
+    res.status(400).json({ message: "Image file is required." });
+    return;
+  }
   let image = req.file.filename;
 
   const data = await Blog.create({

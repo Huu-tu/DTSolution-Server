@@ -1,19 +1,19 @@
 import { Request, Response, NextFunction } from "express";
-import Service from "../models/service.model";
+import Product from "../models/product.model";
 
-export const getAllService = async (
+export const getAllProduct = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const services = await Service.find();
+    const products = await Product.find();
 
-    if (services && services.length > 0) {
-      res.status(200).json(services);
+    if (products && products.length > 0) {
+      res.status(200).json(products);
     } else {
       res.status(404).json({
-        message: "No services found.",
+        message: "No products found.",
       });
     }
   } catch (error: any) {
@@ -23,34 +23,34 @@ export const getAllService = async (
       });
     } else {
       res.status(500).json({
-        message: "An error occurred while fetching services.",
+        message: "An error occurred while fetching products.",
         error: error.message
       });
     }
   }
 };
 
-export const getSingleService = async (
+export const getSingleProduct = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
-    const data = await Service.findById(req.params.id)
-      .select('title description tech image type createdAt');
+    const product = await Product.findById(req.params.id)
+      .select('title description price tech image createdAt');
 
-    if (!data) {
-      res.status(404).json({ message: 'Service not found' });
+    if (!product) {
+      res.status(404).json({ message: 'Product not found' });
       return;
     }
 
-    res.status(200).json(data);
+    res.status(200).json(product);
   } catch (error) {
     next(error);
   }
 };
 
-export const createService = async (
+export const createProduct = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -58,7 +58,7 @@ export const createService = async (
   let title = req.body.title;
   let description = req.body.description;
   let tech = req.body.tech;
-  let type = req.body.type;
+  let price = req.body.price;
 
   if (!req.file) {
     res.status(400).json({ message: "Image file is required." });
@@ -66,15 +66,15 @@ export const createService = async (
   }
   let image = req.file.filename;
 
-  const data = await Service.create({
+  const product = await Product.create({
     title,
     description,
     tech,
-    type,
+    price,
     image,
   });
 
-  if (data) {
+  if (product) {
     res.status(200).json('Success');
   } else {
     res.json('Failed');

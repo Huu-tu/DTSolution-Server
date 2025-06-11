@@ -60,6 +60,11 @@ export const createSolution = async (
   let description = req.body.description;
   let company = req.body.company;
   let tech = req.body.tech;
+
+  if (!req.file) {
+    res.status(400).json({ message: "Image file is required." });
+    return;
+  }
   let image = req.file.filename;
 
   const solution = await Solution.create({
