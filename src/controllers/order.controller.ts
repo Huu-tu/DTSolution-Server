@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import QRCode from 'qrcode';
 import Order from "../models/order.model";
 import Product from "../models/product.model";
 
@@ -32,7 +33,7 @@ export const getAllOrder = async (
 };
 
 
-export const OrderProduct = async (
+export const orderProduct = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -66,7 +67,29 @@ export const OrderProduct = async (
     });
 
     await newOrder.save();
-    res.status(201).json(newOrder);
+
+    const paymentInfo = {
+      bankNumber: '109665391',
+      bankName: 'Viettinbank',
+      accountName: 'DO HUU TU',
+      amount: totalAmount,
+      note: `Thanh toan don hang ${newOrder._id}`
+    };
+
+    const qrContent = `STK: ${paymentInfo.bankNumber}
+    Ngân hàng: ${paymentInfo.bankName}
+    Chủ TK: ${paymentInfo.accountName}
+    Số tiền: ${paymentInfo.amount}
+    Nội dung: ${paymentInfo.note}`;
+
+    const qrImage = await QRCode.toDataURL(qrContent);
+
+    res.status(201).json({
+      message: 'Đơn hàng đã được tạo. Vui lòng thanh toán.',
+      order: newOrder,
+      qrImage,
+      paymentInfo
+    });
 
   } catch (error) {
     next(error);

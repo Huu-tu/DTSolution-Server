@@ -1,11 +1,11 @@
 import { Router } from "express";
-import {getAllOrder, orderComplete, OrderProduct} from "../controllers/order.controller";
+import {getAllOrder, orderComplete, orderProduct} from "../controllers/order.controller";
 
 const router: Router = Router();
 
 // Order
 router.get("/", getAllOrder);
-router.post("/", OrderProduct);
+router.post("/", orderProduct);
 router.put("/:id/complete", orderComplete);
 
 
