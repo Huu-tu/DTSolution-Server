@@ -55,10 +55,7 @@ export const createProduct = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  let title = req.body.title;
-  let description = req.body.description;
-  let tech = req.body.tech;
-  let price = req.body.price;
+  const {title, description, tech, price} = req.body;
 
   if (!req.file) {
     res.status(400).json({ message: "Image file is required." });
