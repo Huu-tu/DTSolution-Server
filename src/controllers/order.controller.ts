@@ -39,30 +39,30 @@ export const orderProduct = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { customerName, customerPhone, customerEmail, items } = req.body;
+    const { customerName, customerPhone, customerEmail, totalAmount } = req.body;
 
-    let totalAmount = 0;
-    const orderItems = [];
+    // let totalAmount = 0;
+    // const orderItems = [];
 
-    for (const item of items) {
-      const product = await Product.findById(item.product);
-      if (!product) {
-        res.status(404).json({ error: 'Sản phẩm không tồn tại' });
-        return;
-      }
-
-      totalAmount += product.price * item.quantity;
-      orderItems.push({
-        product: product._id,
-        quantity: item.quantity
-      });
-    }
+    // for (const item of items) {
+    //   const product = await Product.findById(item.product);
+    //   if (!product) {
+    //     res.status(404).json({ error: 'Sản phẩm không tồn tại' });
+    //     return;
+    //   }
+    //
+    //   totalAmount += product.price * item.quantity;
+    //   orderItems.push({
+    //     product: product._id,
+    //     quantity: item.quantity
+    //   });
+    // }
 
     const newOrder = new Order({
       customerName,
       customerPhone,
       customerEmail,
-      items: orderItems,
+      items: totalAmount,
       totalAmount
     });
 
