@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import QRCode from 'qrcode';
+import axios from 'axios';
 import Order from "../models/order.model";
-import Product from "../models/product.model";
 
 export const getAllOrder = async (
   req: Request,
@@ -39,56 +38,56 @@ export const orderProduct = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const { customerName, customerPhone, customerEmail, totalAmount } = req.body;
+    const { customerName, customerPhone, customerEmail, totalAmount, status } = req.body;
 
-    // let totalAmount = 0;
-    // const orderItems = [];
-
-    // for (const item of items) {
-    //   const product = await Product.findById(item.product);
-    //   if (!product) {
-    //     res.status(404).json({ error: 'Sản phẩm không tồn tại' });
-    //     return;
-    //   }
-    //
-    //   totalAmount += product.price * item.quantity;
-    //   orderItems.push({
-    //     product: product._id,
-    //     quantity: item.quantity
-    //   });
-    // }
+    console.log(totalAmount)
 
     const newOrder = new Order({
       customerName,
       customerPhone,
       customerEmail,
-      items: totalAmount,
-      totalAmount
+      totalAmount,
+      status
     });
 
     await newOrder.save();
 
-    const paymentInfo = {
-      bankNumber: '109665391',
-      bankName: 'Viettinbank',
-      accountName: 'DO HUU TU',
-      amount: totalAmount,
-      note: `Thanh toan don hang ${newOrder._id}`
-    };
+    const bankNumber = '109868658391';
+    const accountName = 'DO HUU TU';
+    const acqId = 970415;
 
-    const qrContent = `STK: ${paymentInfo.bankNumber}
-    Ngân hàng: ${paymentInfo.bankName}
-    Chủ TK: ${paymentInfo.accountName}
-    Số tiền: ${paymentInfo.amount}
-    Nội dung: ${paymentInfo.note}`;
+    const response = await axios.post(
+      'https://api.vietqr.io/v2/generate',
+      {
+        accountNo: bankNumber,
+        accountName: accountName,
+        acqId: acqId,
+        amount: totalAmount + "0",
+        addInfo: `Thanh toan don hang ${newOrder._id}`,
+        template: 'print'
+      },
+      {
+        headers: {
+          'x-client-id': '240dc0ed-37de-4f03-854d-c8abd94453a0',
+          'x-api-key': '2bc53799-f7c5-43af-aa67-8752b6f45b4b',
+          'Content-Type': 'application/json'
+        }
+      }
+    );
 
-    const qrImage = await QRCode.toDataURL(qrContent);
+    const qrImage = response.data.data.qrDataURL;
 
     res.status(201).json({
       message: 'Đơn hàng đã được tạo. Vui lòng thanh toán.',
       order: newOrder,
       qrImage,
-      paymentInfo
+      paymentInfo: {
+        bankNumber,
+        accountName,
+        acqId,
+        amount: totalAmount,
+        note: `Thanh toan don hang ${newOrder._id}`
+      }
     });
 
   } catch (error) {
